@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { CalendarIcon, Upload, X, Facebook, Instagram, Linkedin, Send, Loader2 } from 'lucide-react';
+import { CalendarIcon, Upload, X, Facebook, Instagram, Linkedin, Send, Loader2, Sparkles, Clock, Target } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,9 +30,9 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const platforms = [
-  { id: 'facebook', name: 'Facebook', icon: Facebook, color: 'social-facebook' },
-  { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'social-instagram' },
-  { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'social-linkedin' },
+  { id: 'facebook', name: 'Facebook', icon: Facebook, color: 'text-social-facebook', bgColor: 'bg-social-facebook/10', borderColor: 'border-social-facebook/30' },
+  { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'text-social-instagram', bgColor: 'bg-social-instagram/10', borderColor: 'border-social-instagram/30' },
+  { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'text-social-linkedin', bgColor: 'bg-social-linkedin/10', borderColor: 'border-social-linkedin/30' },
 ];
 
 export default function SocialMediaForm() {
@@ -121,98 +121,244 @@ export default function SocialMediaForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent mb-2">
-            Social Media Automation
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-10 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary-glow/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+      </div>
+      
+      <div className="relative max-w-5xl mx-auto p-6 pt-12">
+        {/* Header */}
+        <div className="text-center mb-12 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+            <Sparkles className="h-4 w-4 text-primary animate-glow" />
+            <span className="text-sm font-medium text-primary">Social Media Automation Studio</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-display font-bold mb-4 bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+            Create & Schedule
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Schedule and automate your social media content across multiple platforms
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Streamline your social media presence with intelligent automation across multiple platforms
           </p>
         </div>
 
-        <Card className="shadow-xl border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Create New Post</CardTitle>
-            <CardDescription>
-              Fill out the form below to schedule your content across social platforms
+        {/* Main Card */}
+        <Card className="backdrop-blur-xl bg-card/80 border-0 shadow-2xl shadow-primary/5 animate-slide-up">
+          <CardHeader className="text-center pb-8">
+            <CardTitle className="text-3xl font-display font-semibold text-foreground">
+              New Content Submission
+            </CardTitle>
+            <CardDescription className="text-lg text-muted-foreground">
+              Fill out the details below to schedule your content across social platforms
             </CardDescription>
           </CardHeader>
           
-          <CardContent>
+          <CardContent className="p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Post Title */}
-                <FormField
-                  control={form.control}
-                  name="postTitle"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Post Title</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter a catchy title for your post..."
-                          className="h-12 text-base"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        A short, engaging title for your social media post
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Left Column */}
+                  <div className="space-y-8">
+                    {/* Post Title */}
+                    <FormField
+                      control={form.control}
+                      name="postTitle"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-lg font-semibold text-foreground flex items-center gap-2">
+                            <Target className="h-5 w-5 text-primary" />
+                            Post Title
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter a compelling title that grabs attention..."
+                              className="h-14 text-base bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription className="text-base">
+                            A catchy headline that summarizes your content ({field.value?.length || 0}/100)
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                {/* Caption */}
-                <FormField
-                  control={form.control}
-                  name="caption"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Caption</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Write your post caption here..."
-                          className="min-h-32 text-base resize-none"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        The main content of your post ({field.value?.length || 0}/2200 characters)
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    {/* Caption */}
+                    <FormField
+                      control={form.control}
+                      name="caption"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-lg font-semibold text-foreground">
+                            Caption
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Write your engaging post content here... Tell your story, share insights, or inspire your audience!"
+                              className="min-h-40 text-base bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300 resize-none"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription className="text-base">
+                            Your main message ({field.value?.length || 0}/2200 characters)
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                {/* Hashtags */}
-                <FormField
-                  control={form.control}
-                  name="hashtags"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Hashtags</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="#socialmedia #automation #marketing"
-                          className="h-12 text-base"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Add relevant hashtags separated by spaces or commas
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    {/* Hashtags */}
+                    <FormField
+                      control={form.control}
+                      name="hashtags"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-lg font-semibold text-foreground">
+                            Hashtags
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="#marketing #socialmedia #automation #growth #business"
+                              className="h-14 text-base bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription className="text-base">
+                            Add relevant hashtags to increase discoverability
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                {/* Media Upload */}
-                <div className="space-y-4">
-                  <FormLabel className="text-base font-semibold">Media Upload</FormLabel>
-                  <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                  {/* Right Column */}
+                  <div className="space-y-8">
+                    {/* Platform Selection */}
+                    <FormField
+                      control={form.control}
+                      name="platforms"
+                      render={() => (
+                        <FormItem className="space-y-4">
+                          <FormLabel className="text-lg font-semibold text-foreground">
+                            Target Platforms
+                          </FormLabel>
+                          <div className="grid gap-4">
+                            {platforms.map((platform) => (
+                              <FormField
+                                key={platform.id}
+                                control={form.control}
+                                name="platforms"
+                                render={({ field }) => {
+                                  const IconComponent = platform.icon;
+                                  const isSelected = field.value?.includes(platform.id);
+                                  return (
+                                    <div className={cn(
+                                      "relative p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group",
+                                      isSelected 
+                                        ? `${platform.bgColor} ${platform.borderColor} shadow-lg scale-[1.02]`
+                                        : "bg-background/30 border-border/30 hover:border-primary/30 hover:bg-background/50"
+                                    )}>
+                                      <FormItem className="flex flex-row items-center space-x-4 space-y-0">
+                                        <FormControl>
+                                          <Checkbox
+                                            checked={isSelected}
+                                            onCheckedChange={(checked) => {
+                                              return checked
+                                                ? field.onChange([...field.value, platform.id])
+                                                : field.onChange(
+                                                    field.value?.filter((value) => value !== platform.id)
+                                                  );
+                                            }}
+                                            className="h-5 w-5"
+                                          />
+                                        </FormControl>
+                                        <FormLabel className="flex items-center space-x-3 cursor-pointer flex-1">
+                                          <IconComponent className={cn("h-6 w-6", platform.color)} />
+                                          <span className="text-base font-medium">{platform.name}</span>
+                                        </FormLabel>
+                                      </FormItem>
+                                      {isSelected && (
+                                        <div className="absolute top-2 right-2">
+                                          <div className="h-2 w-2 bg-primary rounded-full animate-glow"></div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Scheduled Date Time */}
+                    <FormField
+                      control={form.control}
+                      name="scheduledDate"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-lg font-semibold text-foreground flex items-center gap-2">
+                            <Clock className="h-5 w-5 text-primary" />
+                            Schedule Date & Time
+                          </FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full h-14 pl-4 text-left font-normal bg-background/50 border-border/50 hover:border-primary/50 transition-all duration-300",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    <div className="flex items-center gap-3">
+                                      <CalendarIcon className="h-5 w-5 text-primary" />
+                                      <span className="text-base">{format(field.value, "PPP 'at' p")}</span>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center gap-3">
+                                      <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+                                      <span>Select date and time</span>
+                                    </div>
+                                  )}
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-card/95 backdrop-blur-xl border-primary/20" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) => date < new Date()}
+                                initialFocus
+                                className="p-4 pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormDescription className="text-base">
+                            Choose when your content should go live
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Media Upload Section */}
+                <div className="space-y-6 pt-4">
+                  <FormLabel className="text-lg font-semibold text-foreground">
+                    Media Assets
+                  </FormLabel>
+                  
+                  <div className="relative">
                     <input
                       type="file"
                       multiple
@@ -221,145 +367,64 @@ export default function SocialMediaForm() {
                       className="hidden"
                       id="image-upload"
                     />
-                    <label htmlFor="image-upload" className="cursor-pointer">
-                      <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-lg font-medium">Upload Images</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Choose up to 4 images (JPG, PNG, max 10MB each)
+                    <label 
+                      htmlFor="image-upload" 
+                      className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-primary/30 rounded-2xl bg-gradient-to-br from-primary/5 to-primary-glow/5 hover:from-primary/10 hover:to-primary-glow/10 transition-all duration-300 cursor-pointer group"
+                    >
+                      <Upload className="h-16 w-16 text-primary mb-4 group-hover:scale-110 transition-transform duration-300" />
+                      <h3 className="text-xl font-semibold text-foreground mb-2">Upload Visual Content</h3>
+                      <p className="text-base text-muted-foreground text-center">
+                        Drag & drop images here or click to browse<br />
+                        <span className="text-sm">Supports JPG, PNG • Max 4 files • 10MB each</span>
                       </p>
                     </label>
                   </div>
 
                   {/* Uploaded Images Preview */}
                   {uploadedImages.length > 0 && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 animate-scale-in">
                       {uploadedImages.map((image, index) => (
                         <div key={index} className="relative group">
-                          <img
-                            src={URL.createObjectURL(image)}
-                            alt={`Upload ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg border"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => removeImage(index)}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
+                          <div className="relative overflow-hidden rounded-xl border-2 border-border/30 bg-background/30 p-2">
+                            <img
+                              src={URL.createObjectURL(image)}
+                              alt={`Upload ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute -top-2 -right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
+                              onClick={() => removeImage(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                {/* Platform Selection */}
-                <FormField
-                  control={form.control}
-                  name="platforms"
-                  render={() => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Platforms to Post To</FormLabel>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-                        {platforms.map((platform) => (
-                          <FormField
-                            key={platform.id}
-                            control={form.control}
-                            name="platforms"
-                            render={({ field }) => {
-                              const IconComponent = platform.icon;
-                              return (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(platform.id)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...field.value, platform.id])
-                                          : field.onChange(
-                                              field.value?.filter((value) => value !== platform.id)
-                                            );
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormLabel className="flex items-center space-x-2 text-sm font-normal cursor-pointer">
-                                    <IconComponent className="h-5 w-5" />
-                                    <span>{platform.name}</span>
-                                  </FormLabel>
-                                </FormItem>
-                              );
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Scheduled Date Time */}
-                <FormField
-                  control={form.control}
-                  name="scheduledDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel className="text-base font-semibold">Scheduled Post Date & Time</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full h-12 pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP 'at' p")
-                              ) : (
-                                <span>Pick a date and time</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date < new Date()}
-                            initialFocus
-                            className="p-3 pointer-events-auto"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormDescription>
-                        Choose when you want this post to be published
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 {/* Webhook URL */}
                 <FormField
                   control={form.control}
                   name="webhookUrl"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base font-semibold">Webhook URL</FormLabel>
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-lg font-semibold text-foreground">
+                        Automation Webhook URL
+                      </FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="https://your-automation-webhook-url.com"
-                          className="h-12 text-base"
+                          placeholder="https://your-automation-service.com/webhook"
+                          className="h-14 text-base bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        The webhook URL where the form data will be sent for automation (e.g., n8n, Zapier)
+                      <FormDescription className="text-base">
+                        The endpoint where your automation service (n8n, Zapier, Make) will receive the data
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -367,22 +432,22 @@ export default function SocialMediaForm() {
                 />
 
                 {/* Submit Button */}
-                <div className="pt-6">
+                <div className="pt-8">
                   <Button 
                     type="submit" 
-                    className="w-full h-14 text-lg"
-                    variant="gradient"
+                    className="w-full h-16 text-lg font-semibold"
+                    variant="premium"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Submitting...
+                        <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                        Processing Your Content...
                       </>
                     ) : (
                       <>
-                        <Send className="mr-2 h-5 w-5" />
-                        Submit for Automation
+                        <Send className="mr-3 h-6 w-6" />
+                        Launch Content Automation
                       </>
                     )}
                   </Button>
