@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { CalendarIcon, Upload, X, Facebook, Instagram, Linkedin, Send, Loader2, Sparkles, Clock, Target } from 'lucide-react';
+import { CalendarIcon, Upload, X, Facebook, Instagram, Linkedin, Send, Loader2, Sparkles, Clock, Target, Wand2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -38,6 +39,9 @@ const platforms = [
 export default function SocialMediaForm() {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -71,6 +75,49 @@ export default function SocialMediaForm() {
 
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAIGenerate = async () => {
+    if (!aiPrompt.trim()) {
+      toast({
+        title: 'Please enter a prompt',
+        description: 'Describe what your post is about to generate content.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    
+    try {
+      // Simulate AI API call - replace with actual AI service
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockResponse = {
+        caption: `Exciting update! ${aiPrompt}. This represents a significant milestone in our journey and we're thrilled to share this moment with our community. Thank you for being part of this amazing journey!`,
+        hashtags: "#exciting #update #milestone #community #grateful #journey #amazing #social #content #engagement"
+      };
+
+      // Update form fields
+      form.setValue('caption', mockResponse.caption);
+      form.setValue('hashtags', mockResponse.hashtags);
+      
+      toast({
+        title: 'Content generated successfully!',
+        description: 'Your caption and hashtags have been populated.',
+      });
+      
+      setShowAIModal(false);
+      setAiPrompt('');
+    } catch (error) {
+      toast({
+        title: 'Generation failed',
+        description: 'Please try again or enter content manually.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const onSubmit = async (data: FormData) => {
@@ -156,6 +203,26 @@ export default function SocialMediaForm() {
           </CardHeader>
           
           <CardContent className="p-8">
+            {/* AI Generate Section */}
+            <div className="space-y-4 mb-8 p-6 rounded-xl bg-gradient-to-r from-primary/5 via-primary-glow/5 to-primary/5 border border-primary/20">
+              <div className="flex justify-center">
+                <Button
+                  type="button"
+                  variant="default"
+                  size="lg"
+                  onClick={() => setShowAIModal(true)}
+                  className="h-12 px-8 bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <Wand2 className="mr-3 h-5 w-5" />
+                  AI Generate
+                </Button>
+              </div>
+              
+              <p className="text-center text-muted-foreground text-base leading-relaxed max-w-2xl mx-auto">
+                Use AI to generate captions and hashtags for your social media post. Just describe what your post is about and let the AI do the rest!
+              </p>
+            </div>
+
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -457,6 +524,65 @@ export default function SocialMediaForm() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Generate Modal */}
+      <Dialog open={showAIModal} onOpenChange={setShowAIModal}>
+        <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border-primary/20">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+              <Wand2 className="h-6 w-6 text-primary" />
+              AI Generate Content
+            </DialogTitle>
+            <DialogDescription className="text-base text-muted-foreground">
+              Describe what your post is about and let our AI create engaging content for you.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            <div className="space-y-3">
+              <label htmlFor="ai-prompt" className="text-sm font-medium text-foreground">
+                Post Description
+              </label>
+              <Textarea
+                id="ai-prompt"
+                placeholder="e.g., announcing our new product launch, sharing team achievement, promoting upcoming event..."
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                className="min-h-24 text-base bg-background/50 border-border/50 focus:border-primary/50 transition-all duration-300"
+              />
+            </div>
+            
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowAIModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleAIGenerate}
+                disabled={isGenerating || !aiPrompt.trim()}
+                className="flex-1 bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 text-white"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Generate Content
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
