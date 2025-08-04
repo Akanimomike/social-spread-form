@@ -90,7 +90,7 @@ export default function SocialMediaForm() {
     setIsGenerating(true);
     
     try {
-      const response = await fetch('https://n8n-rksa.onrender.com/webhook/d5799868-0383-44fc-ba56-17dc7399bc69/chat', {
+      const response = await fetch('https://n8n-rksa.onrender.com/webhook/afb65a9e-aac2-4b64-8010-216c163e9aa4/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
