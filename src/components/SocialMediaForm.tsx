@@ -90,7 +90,7 @@ export default function SocialMediaForm() {
     setIsGenerating(true);
     
     try {
-      const response = await fetch('https://n8n-rksa.onrender.com/webhook/afb65a9e-aac2-4b64-8010-216c163e9aa4/chat', {
+      const response = await fetch('https://n8n-rksa.onrender.com/webhook/d02f08b1-5baf-403b-b8e9-beebf1962697', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export default function SocialMediaForm() {
       const data = await response.json();
       
       // Update form fields with the response from n8n
-      form.setValue('caption', data.caption || data.content || '');
+      form.setValue('caption', data.caption || '');
       form.setValue('hashtags', data.hashtags || '');
       
       toast({
