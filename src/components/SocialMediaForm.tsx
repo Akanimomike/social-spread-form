@@ -90,17 +90,25 @@ export default function SocialMediaForm() {
     setIsGenerating(true);
     
     try {
-      // Simulate AI API call - replace with actual AI service
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const mockResponse = {
-        caption: `Exciting update! ${aiPrompt}. This represents a significant milestone in our journey and we're thrilled to share this moment with our community. Thank you for being part of this amazing journey!`,
-        hashtags: "#exciting #update #milestone #community #grateful #journey #amazing #social #content #engagement"
-      };
+      const response = await fetch('https://n8n-rksa.onrender.com/webhook/d5799868-0383-44fc-ba56-17dc7399bc69/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: aiPrompt
+        }),
+      });
 
-      // Update form fields
-      form.setValue('caption', mockResponse.caption);
-      form.setValue('hashtags', mockResponse.hashtags);
+      if (!response.ok) {
+        throw new Error('Failed to generate content');
+      }
+
+      const data = await response.json();
+      
+      // Update form fields with the response from n8n
+      form.setValue('caption', data.caption || data.content || '');
+      form.setValue('hashtags', data.hashtags || '');
       
       toast({
         title: 'Content generated successfully!',
@@ -110,6 +118,7 @@ export default function SocialMediaForm() {
       setShowAIModal(false);
       setAiPrompt('');
     } catch (error) {
+      console.error('AI Generation error:', error);
       toast({
         title: 'Generation failed',
         description: 'Please try again or enter content manually.',
